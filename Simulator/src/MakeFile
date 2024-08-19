@@ -1,0 +1,36 @@
+BIN=../bin
+INC=../inc
+OUT=../out
+SRC=.
+
+CC=g++
+CFLAGS=-c -Wall -I$(INC)
+
+SOURCES:=$(wildcard $(SRC)/*.cc)
+OBJECTS:=$(patsubst $(SRC)/%.cc,$(BIN)/%.o,$(SOURCES))
+
+default:
+	@echo "Available commands are as follows: "
+	@echo " 	---make build--- 	to build all files."
+	@echo " 	---make run--- 		to run application after build."
+	@echo " 	---make clean--- 	to remove all built files."
+
+.PHONY: build
+build: $(OBJECTS)
+	$(CC) $(OBJECTS) -o $(BIN)/main.exe
+	$(RM) -f  $(OUT)/*.txt
+
+$(BIN)/%.o: $(SRC)/%.cc
+	$(CC) $(CFLAGS) $< -o $@
+
+.PHONY : run
+run:
+	$(BIN)/main.exe
+
+.PHONY : clean
+clean:
+	$(RM) -f  $(BIN)/*.o $(BIN)/*.exe
+	$(RM) -f  $(OUT)/*.txt
+
+.cpp.o:
+	${CFLAGS} -c $<
