@@ -14,7 +14,6 @@ Photon::Photon(const std::vector<double>& startPos, int iterNum, int waveLength,
     std::vector<double> ppoAbs;
     std::vector<double> scintillatorAbs;
 
-    // std::cout << "database calls\n";
     try
     {
         ppoAbs = DataBase::getValsByKey("PPO_abs_length_interp", "../database/PPO_absorbtion.txt");
@@ -27,24 +26,11 @@ Photon::Photon(const std::vector<double>& startPos, int iterNum, int waveLength,
         exit(1);
     }
 
-    // std::cout << "database calls end\n";
-
-    // debug
-    // if (m_identifier == 0)
-    // {
-    //     for (auto st : scintillatorAbs)
-    //     {
-    //         std::cout << st << std::endl;
-    //     }
-    // }
-
     m_ppoAbs = ppoAbs[m_wavelength-200];
     m_scintillatorAbs = scintillatorAbs[m_wavelength-250];
 
     m_interactionProb = (1/(scatteringLen/1000) + 1/m_scintillatorAbs + 1/m_ppoAbs);
-    // std::cout << "First velocity call\n";
     this->changeVelocity();
-    // std::cout << "got through constructor\n";
     if (Environment::getInstance()->isThereFibers() == false)
     {
         m_fibersExist = false;
@@ -63,18 +49,6 @@ void Photon::updatePosition()
 
     if (m_fibersExist == true)
     {
-        // auto theta = atan(m_velocity[2]/(sqrt(m_velocity[0]*m_velocity[0] + m_velocity[1]*m_velocity[1])));
-
-        // auto stepLenXY = m_stepLen/cos(theta);
-        // if (stepLenXY < 0)
-        // {
-        //     stepLenXY = -stepLenXY;
-        // }
-
-        // std::cout << m_stepLen << ", " << stepLenXY << std::endl;
-        // std::cout << "Angle for XY step length: " << theta << std::endl;
-        // std::cout << "Calling Fiber Collision at position: " << m_position[0] << ", " << m_position[1] << std::endl;
-
         auto stepLenXY = sqrt(m_velocity[0]*m_stepLen*m_velocity[0]*m_stepLen + m_velocity[1]*m_stepLen*m_velocity[1]*m_stepLen);
         auto fiberWeHit = Environment::getInstance()->fiberCollision(m_position, m_velocity, stepLenXY);
 
@@ -87,7 +61,7 @@ void Photon::updatePosition()
         }
         else if (fiberWeHit == std::vector<double>({-999,-999}))
         {
-            std::cout << "Photon out of simulator range, terminating at last position\n";
+            std::cout << "Photon out of simulated range, terminating at last position\n";
             m_finished = true;
         }
         else
@@ -109,11 +83,6 @@ void Photon::updatePosition()
         m_position[1] += m_velocity[1]*m_stepLen;
         m_position[2] += m_velocity[2]*m_stepLen;
     }
-
-    // auto finalPos = getCurrentPosition();
-    // m_pathBuffer.append(std::to_string(finalPos[0]) + "," + std::to_string(finalPos[1]) + "," + std::to_string(finalPos[2]) + "] hitFiber=" + std::to_string(m_hitFiber) + "\n");
-    // DataBase::writeToFile(m_pathBuffer, "../out/PhotonPaths.txt");
-    // exit(0);
 }
 
 void Photon::changeVelocity()
@@ -129,9 +98,6 @@ void Photon::changeVelocity()
         magnitude += m_velocity[i]*m_velocity[i];
     }
     magnitude = sqrt(magnitude);
-
-    // std::cout << m_velocity[0] << ", " << m_velocity[1] << ", " << m_velocity[2] << "\n";
-    // std::cout << magnitude << "\n";
 
     for (int i = 0; i < 3; i++)
     {
@@ -165,8 +131,6 @@ std::string Photon::whatInteraction()
     std::uniform_real_distribution<float> dis(0.0f, m_interactionProb);
     float random_float = dis(gen);
 
-    // std::cout << random_float << ", " << 1/m_ppoAbs << std::endl;
-
     if (random_float < (1/m_ppoAbs))
     {
         return "PPO Absorbtion";
@@ -189,7 +153,6 @@ bool Photon::readyToTerminate() const
 void Photon::startPhotonThread(Photon* photon)
 {
     std::cout << "Launched thread from photon class with wavelength: " << photon->m_wavelength << std::endl;
-    //std::cout << "Getting update from photon id: " << photon->m_identifier << " With wavelength: " << photon->m_wavelength << std::endl;
 
     while (1)
     {
@@ -200,12 +163,6 @@ void Photon::startPhotonThread(Photon* photon)
         {
             break;
         }
-
-        // bool hitAFiber = photon->checkForCollision();
-        // if (hitAFiber)
-        // {
-        //     break;
-        // }
 
         auto interaction = photon->whatInteraction();
         if (interaction == "PPO Absorbtion")
@@ -232,7 +189,6 @@ void Photon::startPhotonThread(Photon* photon)
         }
         else if (interaction == "Scattering")
         {
-            // DataBase::write(m_identifier, m_position, "file.csv");
             std::cout << photon->m_identifier << " Scattered\n";
             photon->changeVelocity();
         }

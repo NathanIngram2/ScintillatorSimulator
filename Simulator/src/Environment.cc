@@ -4,7 +4,6 @@
 #include <mutex>
 
 constexpr float PI = 3.14159265359;
-std::mutex mutex;
 Environment* Environment::m_instance = nullptr;
 
 Environment::Environment()
@@ -19,8 +18,6 @@ Environment::~Environment()
 
 std::vector<double> Environment::findClosestFiberInDirection(const std::vector<double>& pos, const std::vector<double>& velo) const
 {
-    // std::cout << "Init position: " << pos[0] << ", " << pos[1] << std::endl;
-    // std::cout << "Init velocity: " << velo[0] << ", " << velo[1] << std::endl;
     auto xdir = 1;
     auto ydir = 1;
 
@@ -33,8 +30,6 @@ std::vector<double> Environment::findClosestFiberInDirection(const std::vector<d
         ydir = -1;
     }
 
-    // std::cout << xdir << ", " << ydir << std::endl;
-
     // construct tempVec of any fibers that may be within our range
     std::vector<std::vector<double>> tempFiberPositions = {};
     float xdist;
@@ -42,13 +37,10 @@ std::vector<double> Environment::findClosestFiberInDirection(const std::vector<d
     float distance;
     for (auto fiberPos : m_positions)
     {
-        // std::cout << "Testing: " << fiberPos[0] << " against " << pos[0] << ", and: " << fiberPos[1] << " against " << pos[1] << std::endl;
         if ((fiberPos[0]-pos[0] > 0 && xdir > 0) || (fiberPos[0]-pos[0] < 0 && xdir < 0))
         {
-            // std::cout << "got hjere -11" << std::endl;
             if ((fiberPos[1]-pos[1] > 0 && ydir > 0) || (fiberPos[1]-pos[1] < 0 && ydir < 0))
             {
-                // std::cout << "got hjere" << std::endl;
                 xdist = fiberPos[0]-pos[0];
                 ydist = fiberPos[1]-pos[1];
                 distance = sqrt((xdist*xdist) + (ydist*ydist));
@@ -57,20 +49,16 @@ std::vector<double> Environment::findClosestFiberInDirection(const std::vector<d
         }
     }
 
-    // std::cout << "Got here 3" << std::endl;
-
     if (tempFiberPositions.empty() == false)
     {
         auto min = tempFiberPositions[0][2];
         std::vector<double> closest = tempFiberPositions[0];
         for (auto temp : tempFiberPositions)
         {
-            // std::cout << temp[0] << ", " << temp[1] << std::endl;
             if (temp[2] < min)
             {
                 min = temp[2];
                 closest = {temp[0],temp[1]};
-                // std::cout << closest[0] << ", " << closest[1] << std::endl;
             }
         }
 
@@ -86,7 +74,6 @@ std::vector<double> Environment::findClosestFiberInDirection(const std::vector<d
 // find the location of the first collision along a path. Return {} if no collision detected within path length.
 std::vector<double> Environment::fiberCollision(const std::vector<double>& position, const std::vector<double>& velocity, float stepLen) const
 {
-    // mutex.lock();
     auto xdir = 1;
     auto ydir = 1;
 
@@ -130,7 +117,6 @@ std::vector<double> Environment::fiberCollision(const std::vector<double>& posit
         auto closestFiberPosition = findClosestFiberInDirection(pos, velocity);
         if (closestFiberPosition.empty() == true)
         {
-            // mutex.unlock();
             return {-999,-999};
         }
         std::vector<double> posDiff = {closestFiberPosition[0]-pos[0], closestFiberPosition[1]-pos[1]};
@@ -148,7 +134,6 @@ std::vector<double> Environment::fiberCollision(const std::vector<double>& posit
             totalDistTravelledY = ydir*totalDistTravelled*sin(veloAngle);
             auto finalPos = std::vector<double>({position[0]+totalDistTravelledX, position[1]+totalDistTravelledY});
             buff.append(std::to_string(finalPos[0]) + ", " + std::to_string(finalPos[1]) + "\n");
-            // mutex.unlock();
             return closestFiberPosition;
         }
         else
@@ -159,7 +144,6 @@ std::vector<double> Environment::fiberCollision(const std::vector<double>& posit
 
     buff.append(std::to_string(position[0] + totalDistTravelledX) + ", " + std::to_string(position[1] + totalDistTravelledY) + "\n");
     DataBase::writeToFile(buff, "../out/testPositions.txt");
-    // mutex.unlock();
     return {};
 }
 
@@ -178,8 +162,7 @@ void Environment::reconfig(float spacing, float diameter, std::string material)
     m_positions.clear();
     m_spacing = spacing;
     m_diameter = diameter;
-    // std::cout << spacing << ", " << diameter << std::endl;
-    // construct cylinder positions
+
     int numOfCylinders = m_width / spacing;
     for (int i = 0; i < numOfCylinders; i++)
     {
@@ -194,7 +177,6 @@ void Environment::reconfig(float spacing, float diameter, std::string material)
     std::string buff = "";
     for (auto positions : m_positions)
     {
-        // std::cout << positions[0] << ", " << positions[1] << ", " << std::endl;
         buff.append(std::to_string(positions[0]) + ", " + std::to_string(positions[1]) + ",\n");
     }
 

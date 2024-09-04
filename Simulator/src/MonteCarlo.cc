@@ -26,7 +26,6 @@ MonteCarlo::MonteCarlo()
         m_processorCount = 4;
     }
 
-    // std::cout << "Trying to pass: " << m_fiberSpacing << ", " << m_fiberDiameter << std::endl;
     m_environment = Environment::getInstance();
 }
 
@@ -40,7 +39,6 @@ MonteCarlo* MonteCarlo::getInstance()
 
 MonteCarlo::~MonteCarlo()
 {
-    // TODO
     std::cout << "Destruct MC\n";
     delete m_photonManager;
     m_photonManager = nullptr;
@@ -94,7 +92,6 @@ void MonteCarlo::animateDemo() const
 
 void MonteCarlo::displayConfiguration() const
 {
-    // std::cout << "Calling display config from MC\n" << std::endl;
     std::cout << this->toString() << std::endl;
     std::cout << "\nPress enter to continue";
     std::getchar();
@@ -122,14 +119,6 @@ void MonteCarlo::executeMC()
         }
         else
         {
-            // Commented out code below can replace the waitForOpening() call, but is a slgihtly slower
-            // concurrency model in high iteration counts
-            // for (auto iter = threadVec.begin(); iter != threadVec.end(); iter++)
-            // {
-            //     iter->join();
-            // }
-            // threadVec.clear();
-            
             m_photonManager->waitForOpening();
             threadVec.emplace_back(m_photonManager->initializePhoton(i, m_scatteringLen, m_scintillatorMaterial));
         }
@@ -196,7 +185,6 @@ void MonteCarlo::setScintillatorMaterial(const std::string& input)
 //       be destroyed without informing higher-level code
 void MonteCarlo::notify(int identifier, bool hitFiber)
 {
-    //std::cout << "Destructing photon with ID: " << identifier << "\n";
     if (hitFiber == true)
     {
         m_fiberCollisions += 1;
