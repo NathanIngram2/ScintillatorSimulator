@@ -14,7 +14,7 @@ private:
     
     float m_diameter;
     float m_spacing;
-    float m_width = 0.3357; // width (and height) of scintillator we're simulating in the x and y (meters)
+    float m_width = 0.3357; // width (and height) of scintillator we're simulating in the x and y (meters), change as needed
     bool m_fibersExist = true;
 
     static Environment* m_instance;
@@ -33,7 +33,7 @@ public:
     }
 
     void generateFiber(float, float, float);
-    void reconfig(float, float, std::string);
+    std::vector<float> reconfig(float, float, std::string);
     std::vector<double> fiberCollision(const std::vector<double>&, const std::vector<double>&, float) const;
     std::vector<double> findClosestFiberInDirection(const std::vector<double>&, const std::vector<double>&) const;
     bool isThereFibers() const;

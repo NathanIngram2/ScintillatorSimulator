@@ -13,7 +13,7 @@ MonteCarlo::MonteCarlo()
     m_fiberDiameter = 0.5; // mm
     m_fiberMaterial = "<--->";
     m_fiberSpacing = 10; // mm
-    m_numOfTotalIterations = 1000;
+    m_numOfTotalIterations = 300;
     m_scatteringLen = 2.0; // mm
 
     m_processorCount = std::thread::hardware_concurrency();
@@ -22,8 +22,8 @@ MonteCarlo::MonteCarlo()
     std::cout << m_processorCount << " possible concurrent threads" << std::endl;
     if (m_processorCount == 0)
     {
-        std::cout << "Had trouble reading threading capabilities. Assuming atleast 4 possible concurrent threads.\n";
-        m_processorCount = 4;
+        std::cout << "Had trouble reading threading capabilities. Using a sequential approach.\n";
+        m_processorCount = 1;
     }
 
     m_environment = Environment::getInstance();
@@ -105,8 +105,10 @@ void MonteCarlo::executeMC()
 
     m_fiberCollisions = 0;
 
-    Environment::getInstance()->reconfig(m_fiberSpacing/1000, m_fiberDiameter/1000, m_fiberMaterial);
+    auto middle = Environment::getInstance()->reconfig(m_fiberSpacing/1000, m_fiberDiameter/1000, m_fiberMaterial);
     std::vector<std::thread> threadVec = {};
+    
+    m_photonManager->setStartingPos(middle, m_fiberSpacing, m_fiberDiameter/2);
 
     auto startTime = std::chrono::high_resolution_clock::now();
 

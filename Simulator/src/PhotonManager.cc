@@ -132,3 +132,16 @@ void PhotonManager::destroyPhoton(int identifier)
     std::cout << "Photon of that identifier is not registered as an active photon!\n";
     throw new std::exception();
 }
+
+void PhotonManager::setStartingPos(std::vector<float> middle, float fiberSpacing, float fiberRadius)
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dis((-fiberSpacing/2)+fiberRadius, (fiberSpacing/2)-fiberRadius);
+    for (int i = 0; i < 3; i++)
+    {
+        m_startingPos[i] = middle[i] + (dis(gen) / 1000);
+    }
+
+    std::cout << m_startingPos[0] << ", " << m_startingPos[1] << ", " << m_startingPos[2] << std::endl;
+}

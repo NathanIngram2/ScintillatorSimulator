@@ -32,6 +32,7 @@ public:
     int getNumberOfRunningThreads() const;
     void waitForOpening();
     int getNumberOfFiberCollisions() const;
+    void setStartingPos(std::vector<float>, float, float);
 
 private:
     std::vector<Photon*> m_activePhotons = {};

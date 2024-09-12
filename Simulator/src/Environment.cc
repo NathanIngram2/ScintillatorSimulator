@@ -147,12 +147,13 @@ std::vector<double> Environment::fiberCollision(const std::vector<double>& posit
     return {};
 }
 
-void Environment::reconfig(float spacing, float diameter, std::string material)
+std::vector<float> Environment::reconfig(float spacing, float diameter, std::string material)
 {
-    if (spacing == 0 || diameter == 0)
+    if (spacing == 0 || diameter == 0 || spacing <= diameter/2)
     {
+        std::cout << "Either no spacing or diamater specified, or not enough spacing by diameter. No fibers will be simulated." << std::endl;
         m_fibersExist = false;
-        return;
+        return {0.f, 0.f, 0.f};
     }
     else
     {
@@ -182,7 +183,30 @@ void Environment::reconfig(float spacing, float diameter, std::string material)
 
     buff.pop_back(); // remove last \n char
     DataBase::writeToFile(buff, "../out/FiberPositions.txt");
+
+    // find one of the innermost square units to begin simulation from
+    auto middle = std::vector<float>({(m_positions.front()[0]+m_positions.back()[0])/2, (m_positions.front()[1]+m_positions.back()[1])/2});
+    float closestX = fabs(middle[0] - m_positions.front()[0]);
+    float closestY = fabs(middle[1] - m_positions.front()[1]);
+    int xind = 0;
+    int yind = 0;
+    for (int i = 1; i < m_positions.size(); i++)
+    {
+        if (fabs(middle[0] - m_positions[i][0]) < closestX)
+        {
+            closestX = fabs(middle[0] - m_positions[i][0]);
+            xind = i;
+        }
+        if (fabs(middle[1] - m_positions[i][1]) < closestY)
+        {
+            closestY = fabs(middle[1] - m_positions[i][1]);
+            yind = i;
+        }
+    }
+    auto innerSquareMiddle = std::vector<float>({(m_positions[xind-1][0] + m_positions[xind][0])/2, (m_positions[yind-1][1] + m_positions[yind][1])/2, 0.f});
+
     std::cout << "Done!\n";
+    return innerSquareMiddle;
 }
 
 bool Environment::isThereFibers() const
