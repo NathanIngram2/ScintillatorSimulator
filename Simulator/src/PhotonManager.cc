@@ -143,5 +143,5 @@ void PhotonManager::setStartingPos(std::vector<float> middle, float fiberSpacing
         m_startingPos[i] = middle[i] + (dis(gen) / 1000);
     }
 
-    std::cout << m_startingPos[0] << ", " << m_startingPos[1] << ", " << m_startingPos[2] << std::endl;
+    std::cout << "Scintillation Burst Location X,Y,Z: " << m_startingPos[0] << ", " << m_startingPos[1] << ", " << m_startingPos[2] << "\n" << std::endl;
 }

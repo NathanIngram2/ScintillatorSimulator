@@ -65,6 +65,9 @@ def plot2d_func():
         
     plt.xlim([(xmin*1000)-5, (xmax*1000)+5])
     plt.ylim([(ymin*1000)-5, (ymax*1000)+5])
+    plt.plot(xvals[0][0]*1000, yvals[0][0]*1000, 'bx')
+    print("Emission origin in x,y is: ", str(xvals[0][0]*1000)+"mm", str(yvals[0][0]*1000)+"mm,")
+    print("Which is marked by a small blue X.\n")
         
     plt.tight_layout()
     plt.savefig("../out/photonPathsAndFibers.pdf", bbox_inches="tight")

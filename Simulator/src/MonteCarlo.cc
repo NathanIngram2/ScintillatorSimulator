@@ -112,11 +112,12 @@ void MonteCarlo::executeMC()
 
     auto startTime = std::chrono::high_resolution_clock::now();
 
+    std::cout << "Scattering Photons..." << std::endl;
+
     for (int i = 0; i < m_numOfTotalIterations; i++)
     {
         if (m_photonManager->getNumberOfRunningThreads() < m_processorCount)
         {
-            std::cout << "Creating photon\n";
             threadVec.emplace_back(m_photonManager->initializePhoton(i, m_scatteringLen, m_scintillatorMaterial));
         }
         else

@@ -152,8 +152,7 @@ bool Photon::readyToTerminate() const
 
 void Photon::startPhotonThread(Photon* photon)
 {
-    std::cout << "Launched thread from photon class with wavelength: " << photon->m_wavelength << std::endl;
-
+    // std::cout << "Launched thread from photon class with wavelength: " << photon->m_wavelength << std::endl;
     while (1)
     {
         photon->calculateStepLength();
@@ -176,19 +175,20 @@ void Photon::startPhotonThread(Photon* photon)
                 break;
             }
             else
+            // Constant printing in this section slows execution so it's been commented out but left in incase these traces are wanted
             {
-                std::cout << photon->m_identifier << " Scattered by PPO\n";
+                // std::cout << photon->m_identifier << " Scattered by PPO\n";
                 photon->changeVelocity();
             }
         }
         else if (interaction == "Scintillator Absorbtion")
         {
-            std::cout << photon->m_identifier << " Absorbed by scintillator\n";
+            // std::cout << photon->m_identifier << " Absorbed by scintillator\n";
             break;
         }
         else if (interaction == "Scattering")
         {
-            std::cout << photon->m_identifier << " Scattered\n";
+            // std::cout << photon->m_identifier << " Scattered\n";
             photon->changeVelocity();
         }
         else

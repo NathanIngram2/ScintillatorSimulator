@@ -94,7 +94,7 @@ std::vector<double> Environment::fiberCollision(const std::vector<double>& posit
     if (velocity[0] != 0)
     {
         veloAngle = atan(velocity[1]/velocity[0]);
-        std::cout << veloAngle << std::endl;
+        // std::cout << veloAngle << std::endl;
     }
     else if (velocity[1] < 0)
     {
@@ -130,7 +130,7 @@ std::vector<double> Environment::fiberCollision(const std::vector<double>& posit
         double dist = posDiffMag*sin(angle);
         if (dist <= m_diameter/2 && posDiffMag-(m_diameter/2) < stepLen)
         {
-            std::cout << "Collision with fiber at positon: " << closestFiberPosition[0] << ", " << closestFiberPosition[1] << std::endl;
+            // std::cout << "Collision with fiber at positon: " << closestFiberPosition[0] << ", " << closestFiberPosition[1] << std::endl;
             DataBase::writeToFile(buff, "../out/testPositions.txt");
             totalDistTravelled += (dist / tan(angle));
             totalDistTravelledX = xdir*totalDistTravelled*cos(veloAngle);
