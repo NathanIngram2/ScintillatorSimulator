@@ -16,6 +16,7 @@ Environment::~Environment()
 
 }
 
+// this function may be accelerated with the use of a tree search algortihm such as a KD tree
 std::vector<double> Environment::findClosestFiberInDirection(const std::vector<double>& pos, const std::vector<double>& velo) const
 {
     auto xdir = 1;
@@ -71,7 +72,9 @@ std::vector<double> Environment::findClosestFiberInDirection(const std::vector<d
     }
 }
 
-// find the location of the first collision along a path. Return {} if no collision detected within path length.
+// find the location of the first collision along a path
+//  - return {} if no collision detected within path length
+//  - return {-999, -999} (arbitrary) if photon leaves simulation bounds
 std::vector<double> Environment::fiberCollision(const std::vector<double>& position, const std::vector<double>& velocity, float stepLen) const
 {
     auto xdir = 1;
@@ -117,7 +120,7 @@ std::vector<double> Environment::fiberCollision(const std::vector<double>& posit
         auto closestFiberPosition = findClosestFiberInDirection(pos, velocity);
         if (closestFiberPosition.empty() == true)
         {
-            return {-999,-999};
+            return {NULL, NULL};
         }
         std::vector<double> posDiff = {closestFiberPosition[0]-pos[0], closestFiberPosition[1]-pos[1]};
         double posDiffMag = sqrt(posDiff[0]*posDiff[0] + posDiff[1]*posDiff[1]);
@@ -147,6 +150,7 @@ std::vector<double> Environment::fiberCollision(const std::vector<double>& posit
     return {};
 }
 
+// reconfigure environment so a full teardown is not needed to simulate different designs
 std::vector<float> Environment::reconfig(float spacing, float diameter, std::string material)
 {
     if (spacing == 0 || diameter == 0 || spacing <= diameter/2)

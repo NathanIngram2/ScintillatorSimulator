@@ -20,8 +20,8 @@ void SetFiberDiameterCommand::Execute() const
     if (fiberDiameter <= 0 || fiberDiameter > 100) // change bounds as needed - mm
     {
         std::cout << "Invalid fiber diameter. Please enter a value in the range 0-100mm\n";
-        std::cout << "Defualting to 5mm.";
-        fiberDiameter = 5.0;
+        std::cout << "Setting diameter to zero. Simulation will omit fibers unless changed.";
+        fiberDiameter = 0;
     }
 
     m_monteCarloInstance->setFiberDiameter(std::to_string(fiberDiameter));

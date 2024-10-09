@@ -44,7 +44,6 @@ public:
     void setFiberDiameter(const std::string&);
     void setFiberMaterial(const std::string&);
     void setFiberSpacing(const std::string&);
-    void setLoggingLevel(const std::string&);
     void setNumOfPhotons(const std::string&);
     void setScintillatorMaterial(const std::string&);
     void setScatteringLength(const std::string&);

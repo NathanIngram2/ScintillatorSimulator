@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "./CommandIf.h"
-#include "./AnimateDemoCommand.h"
+#include "./VisualizeCommand.h"
 #include "./DisplayConfigurationCommand.h"
 #include "./ExecuteMCCommand.h"
 #include "./SetFiberDiameterCommand.h"

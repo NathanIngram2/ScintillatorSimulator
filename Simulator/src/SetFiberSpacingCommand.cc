@@ -20,8 +20,8 @@ void SetFiberSpacingCommand::Execute() const
     if (fiberSpacing <= 0 || fiberSpacing > 100) // change bounds as needed - mm
     {
         std::cout << "Invalid fiber spacing. Please enter a value in the range 0-100mm\n";
-        std::cout << "Defualting to 15mm.";
-        fiberSpacing = 15.0;
+        std::cout << "Setting spacing to zero. Simulation will omit fibers unless changed.";
+        fiberSpacing = 0;
     }
 
     m_monteCarloInstance->setFiberSpacing(std::to_string(fiberSpacing));

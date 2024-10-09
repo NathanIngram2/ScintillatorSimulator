@@ -39,7 +39,7 @@ Photon::Photon(const std::vector<double>& startPos, int iterNum, int waveLength,
 
 Photon::~Photon()
 {
-    // TODO
+
 }
 
 void Photon::updatePosition()
@@ -59,7 +59,7 @@ void Photon::updatePosition()
             m_position[1] += m_velocity[1]*m_stepLen;
             m_position[2] += m_velocity[2]*m_stepLen;
         }
-        else if (fiberWeHit == std::vector<double>({-999,-999}))
+        else if (fiberWeHit == std::vector<double>({NULL, NULL}))
         {
             std::cout << "Photon out of simulated range, terminating at last position\n";
             m_finished = true;
@@ -167,7 +167,6 @@ void Photon::startPhotonThread(Photon* photon)
         auto interaction = photon->whatInteraction();
         if (interaction == "PPO Absorbtion")
         {
-            // std::cout << photon->m_identifier << " Absorbed by PPO\n";
             std::random_device rd;
             std::mt19937 gen(rd());
             std::uniform_real_distribution<float> dis(0.0f, 1.0f);

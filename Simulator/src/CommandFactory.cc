@@ -40,7 +40,7 @@ CommandIf* CommandFactory::createCommand(MenuOptions option)
         return new SetFiberDiameterCommand("Set Fiber Diameter", {"Diameter (mm)"});
 
       case AnimateDemo:
-        return new AnimateDemoCommand("Animate Demo (matplotlib)", {""});
+        return new VisualizeCommand("Visualize Scattering (matplotlib)", {""});
 
       case ExecuteMC:
         return new ExecuteMCCommand("Execute Monte Carlo", {""});

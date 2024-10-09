@@ -156,11 +156,6 @@ void MonteCarlo::setFiberSpacing(const std::string& input)
     m_fiberSpacing = std::stod(input);
 }
 
-void MonteCarlo::setLoggingLevel(const std::string& input)
-{
-    std::cout << "Calling logging level config from MC" << std::endl;
-}
-
 void MonteCarlo::setNumOfPhotons(const std::string& input)
 {
     m_numOfTotalIterations = std::stoi(input);

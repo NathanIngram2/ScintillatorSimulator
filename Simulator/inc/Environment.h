@@ -32,7 +32,6 @@ public:
         return m_instance;
     }
 
-    void generateFiber(float, float, float);
     std::vector<float> reconfig(float, float, std::string);
     std::vector<double> fiberCollision(const std::vector<double>&, const std::vector<double>&, float) const;
     std::vector<double> findClosestFiberInDirection(const std::vector<double>&, const std::vector<double>&) const;

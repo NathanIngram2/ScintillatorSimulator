@@ -11,24 +11,11 @@ SetFiberMaterialCommand::~SetFiberMaterialCommand()
 
 }
 
+// Here for the extension of the functionality of existing simulation capabilities
 void SetFiberMaterialCommand::Execute() const
 {
-    std::cout << "Enter an average scattering length in mm: ";
-    int optionNo;
-    std::string scintillatingMaterial;
-    std::cin >> optionNo;
+    std::cout << "Enter a fiber material of the supported types [...]: ";
+    std::string fiberMaterial = "";
 
-    switch(optionNo)
-    {
-        case 1:
-            scintillatingMaterial = "LAB";
-            break;
-        case 2:
-            scintillatingMaterial = "DIN";
-            break;
-        default:
-            scintillatingMaterial = " ";
-    }
-
-    m_monteCarloInstance->setFiberMaterial(scintillatingMaterial);
+    m_monteCarloInstance->setFiberMaterial(fiberMaterial);
 }
