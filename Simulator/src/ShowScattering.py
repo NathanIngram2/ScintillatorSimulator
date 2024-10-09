@@ -244,7 +244,7 @@ class MyParser(argparse.ArgumentParser):
 
 parser = MyParser(description="Python plotting script for Monte Carlo photon path results.\
                    Can be called from either the C++ code directly or from the command line by the user.\
-                   For interactive plots, use this code in an editor that supports <%matplotlib auto> such as spyder.")
+                   For interactive plots, use this code in an editor that supports <%matplotlib auto> such as spyder or vscode/jupyter notebook.")
 
 FUNC_MAP = {'plot2d' : plot2d_func,
             'plot2d_collisions' : plot2d_collisions_func,
@@ -257,6 +257,7 @@ required_function_name.add_argument("-func", choices=FUNC_MAP.keys(), help="Func
 scintillator_type = parser.add_argument_group('Scintillator Cocktail Material')
 required_function_name.add_argument("-sc_type", help="Scintillator Liquid Body Material [LAB, DIN]", required=True)
 parser.add_argument("-fiber_diam", help="Simulated fiber diameter.")
+parser.add_argument("-d", help="Plot scattering debugging points (2d only).")
 
 args = parser.parse_args()
 diameter = None        # need to initialize
@@ -281,14 +282,11 @@ else:
     print("No argument passed for fiber diameter; assumed simulation without fibers.")
     simulate_fibers = False
 
-print(scintillator_type, diameter, simulate_fibers)
+debug = True if (args.d) else False
 
 plot2d_collisions = False
 plot2d_collisions_heatmap = False
 plot2d_collisions_with_fibers = False
-
-debug = False
-
 # ==================================== END ARGPARSING/SETUP ====================================
 
 # ==================================== START DATA INIT ====================================
@@ -390,7 +388,6 @@ for line in hit_fiber_lines:
     Open testPositions.txt and pull the closest fiber testing positions for each photon
 """
 if (debug):
-    
     # Define lists to store x and y coordinates
     test_x_positions = []
     test_y_positions = []
