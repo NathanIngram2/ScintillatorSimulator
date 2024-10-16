@@ -16,9 +16,15 @@ The C++ code is run directly from the 'src' dir via make, and brings up a CLI wh
 
 The python plotting script is within the 'plotting' dir, and scrapes information from the generated 'out' dir text files. This script may be run directly from within the C++ CLI, or command-line after exiting the C++ interface. The default behaviour of the script is to save static plots to the 'out' dir, however, adjusting the file path's and running this script in an editor that supports %matplotlib auto (such as Spyder or JupyterNotebook) will create active plots.
 
-- Usage: ./ShowScattering.py -func {plot2d,plot2d_collsions,plot3d,plot_wavelength_hist} -sc_type {LAB,DIN} 
+- Usage: python ./ShowScattering.py -func {plot2d,plot2d_collsions,plot3d,plot_wavelength_hist} -sc_type {LAB,DIN} -fiber_diam <float> -d
+   - Required:
+      - func : Plot type to be generated
+      - sc_type : LiquidO scintillator cocktail solution
+   - Optional
+      - fiber_diam : Diameter of simualted fibers. If nothing provided, plots will not include fibers
+      - d : debugging points at scattering positions
 
-- Example: ./ShowScattering.py -func plot2d_collsions -sc_type LAB -fiber_diam 0.5
+- Example: python ./ShowScattering.py -func plot2d_collsions -sc_type LAB -fiber_diam 0.5
    - Generates a stacked plot showing all end positions of photons as well as a heatmap of fiber collisions in a 2d (x,y) plane.
 
 
