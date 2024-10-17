@@ -25,7 +25,9 @@ The python plotting script is within the 'plotting' dir, and scrapes information
       - d : Flag for enabling debugging points at scattering positions (supported for plot2d)
 
 - Example: python ./ShowScattering.py -func plot2d_collsions -sc_type LAB -fiber_diam 0.5
-   - Generates a stacked plot showing all end positions of photons as well as a heatmap of fiber collisions in a 2d (x,y) plane. Scattering origin also shown. ([fiberCollisions.pdf](https://github.com/user-attachments/files/17406129/fiberCollisions.pdf))
+   - Generates a stacked plot showing all end positions of photons as well as a heatmap of fiber collisions in a 2d (x,y) plane. Scattering origin also shown.
+   - ![fiberCollisions](https://github.com/user-attachments/assets/1462b79b-bc7c-4fb6-a639-7a8ecde999a6)
+
 
 
 
