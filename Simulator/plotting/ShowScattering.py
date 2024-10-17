@@ -19,7 +19,7 @@ plt.rc('ytick', labelsize=small_font)
 plt.rc('legend', fontsize=small_font)
 #----------------------------------------
 
-# ==================================== START FUNCTIONS ====================================
+# ==================================== BEGIN FUNCTIONS ====================================
 
 """
     Plot Photon Burst and Fiber Positions in the x-y plane
@@ -70,59 +70,34 @@ def plot2d_func():
     print("Which is marked by a small blue X.\n")
         
     plt.tight_layout()
-    plt.savefig("../out/photonPathsAndFibers.pdf", bbox_inches="tight")
-    print("Saved figure as ../out/photonPathsAndFibers.pdf")
+    plt.savefig("../out/photonPathsAndFibers.png", bbox_inches="tight") # save as .pdf for higher quality but higher image loading cost
+    print("Saved figure as ../out/photonPathsAndFibers.png")
         
 #%%
 """
     Plot only Fiber Collisions in the x-y plane
 """
 def plot2d_collisions_func():
-    plt.title("Photon-Fiber Collisions for a {} Photon Burst".format(len(xvals)) + " in " + scintillator_type)
-    plt.xlabel("x (mm)")
-    plt.ylabel("y (mm)")
-    plt.plot(0,0,'g.',label='Origin')
-    
-    if (not plot2d_collisions_heatmap):
-        plt.plot(x_end_positions*1000, y_end_positions*1000, "rx",label="Fiber Collisions")
+    plt.style.use("default")
+    fig, ax = plt.subplots(2, figsize=(4,5), layout='constrained')
+    ax[0].plot(x_end_positions*1000, y_end_positions*1000, "rx",label="Fiber Collisions")
+    ax[0].plot(xvals[0][0], yvals[0][0],'g.',label='Origin')
+    ax[0].set_xlim(min(x_end_positions*1000), max(x_end_positions*1000))
+    ax[0].set_ylim((min(y_end_positions*1000)), max(y_end_positions*1000))
+    hist = ax[1].hist2d(x_end_positions, y_end_positions, bins=100, cmap="gist_stern")
+    ax[0].set(title="Fiber Collisions in " + scintillator_type)
+    ax[1].set(xlabel="x (m)")
+    ax[0].set(ylabel="y (m)")
+    ax[1].set(ylabel="y (m)")
+    for i in range(2):
+        ax[i].label_outer()
 
-        
-    if (plot2d_collisions_with_fibers):
-        x_circle = np.array([])
-        y_circle = np.array([])
-        for i in range(len(x_coordinates)):
-            theta = (2*np.pi / 21)*i
-            x1 = (diameter/2) * np.cos(theta)
-            y1 = (diameter/2) * np.sin(theta)
-            x_circle = np.append(x_circle, x1)
-            y_circle = np.append(y_circle, y1)
-            
-        for i in range(len(x_coordinates)):
-            plt.plot(x_circle[:]+x_coordinates[i]*1000, y_circle[:]+y_coordinates[i]*1000, '-r')
-    
-        
-    if (plot2d_collisions_heatmap):
-        plt.style.use("default")
-        fig, ax = plt.subplots(2, figsize=(4,5), layout='constrained')
-        ax[0].plot(x_end_positions*1000, y_end_positions*1000, "rx",label="Fiber Collisions")
-        hist = ax[1].hist2d(x_end_positions, y_end_positions, bins=100, cmap="gist_stern")
-        ax[0].set(title="Fiber Collisions in " + scintillator_type)
-        ax[1].set(xlabel="x (m)")
-        ax[0].set(ylabel="y (m)")
-        ax[1].set(ylabel="y (m)")
-        for i in range(2):
-            ax[i].label_outer()
-    
-        # Add colorbar
-        cbar = plt.colorbar(hist[3], ax=ax[1])
-        cbar.set_label('Counts')
+    # Add colorbar
+    cbar = plt.colorbar(hist[3], ax=ax[1])
+    cbar.set_label('Counts')
 
-    if (not plot2d_collisions_heatmap):
-        plt.legend()
-        plt.tight_layout()
-
-    plt.savefig("../out/fiberCollisions.pdf", bbox_inches="tight")
-    print("Saveing image as ../out/fiberCollisions.pdf")
+    plt.savefig("../out/fiberCollisions.png", bbox_inches="tight") # save as .pdf for higher quality but higher image loading cost
+    print("Saveing image as ../out/fiberCollisions.png")
     plt.style.use("ggplot")
 
 #%%
@@ -165,8 +140,8 @@ def plot3d_func():
         for i in range(len(x_coordinates)):
             ax.plot(x_fiber[:]+x_coordinates[i]*1000, y_fiber[:]+y_coordinates[i]*1000, z_fiber[:]*1000, '-r', alpha=0.075)
             
-    fig.savefig("../out/full3d.pdf")
-    print("Saving figure as ../out/full3d.pdf")
+    fig.savefig("../out/full3d.png") # save as .pdf for higher quality but higher image loading cost
+    print("Saving figure as ../out/full3d.png")
     
 
 #%%
@@ -231,14 +206,12 @@ def plot_wavelength_hist_func():
     ax[1].label_outer()
     fig.tight_layout()
     
-    fig.savefig("../out/generatedWavelengths.pdf", bbox_inches="tight")
-    print("Saved figure as ../out/generatedWavelengths.pdf")
+    fig.savefig("../out/generatedWavelengths.png", bbox_inches="tight") # save as .pdf for higher quality but higher image loading cost
+    print("Saved figure as ../out/generatedWavelengths.png")
 
-def parse_test():
-    print("Printing from parse test call!")
 # ==================================== END FUNCTIONS ====================================
 
-# ==================================== START ARGPARSING/SETUP ====================================
+# ==================================== BEGIN ARGPARSING/SETUP ====================================
 class MyParser(argparse.ArgumentParser):
     def error(self, message):
         sys.stderr.write('error: %s\n' % message)
@@ -252,8 +225,7 @@ parser = MyParser(description="Python plotting script for Monte Carlo photon pat
 FUNC_MAP = {'plot2d' : plot2d_func,
             'plot2d_collisions' : plot2d_collisions_func,
             'plot3d' : plot3d_func,
-            'plot_wavelength_hist' : plot_wavelength_hist_func,
-            'parse_test' : parse_test}
+            'plot_wavelength_hist' : plot_wavelength_hist_func}
 
 required_function_name = parser.add_argument_group('Required Arguments')
 required_function_name.add_argument("-func", choices=FUNC_MAP.keys(), help="Function to be performed", required=True)
@@ -286,13 +258,9 @@ else:
     simulate_fibers = False
 
 debug = True if (args.d) else False
-
-plot2d_collisions = False
-plot2d_collisions_heatmap = False
-plot2d_collisions_with_fibers = False
 # ==================================== END ARGPARSING/SETUP ====================================
 
-# ==================================== START DATA INIT ====================================
+# ==================================== BEGIN DATA INIT ====================================
 """
     Open fiberPositions.txt and extract x and y coords
 """
