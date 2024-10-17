@@ -4,6 +4,9 @@
 #include <iostream>
 #include <vector>
 #include <thread>
+#include <stdio.h>
+#include <chrono>
+#include <atomic>
 
 #include "./PhotonManager.h"
 #include "./Environment.h"
@@ -25,10 +28,6 @@ public:
 	MonteCarlo(const MonteCarlo&) = delete;
 	void operator=(const MonteCarlo&) = delete;
     static MonteCarlo* getInstance();
-
-    void start();
-    void update();
-	void setMonteCarloParameters(const std::vector<std::string>&);	//set inital parameters based on parsed user inputs
     
 	int getIterationNum() const;
     std::string getEstimatedTimeToCompletion(const int) const;
@@ -38,7 +37,7 @@ public:
     std::string getFiberMaterial() const;
     std::string toString() const;
 
-    void animateDemo() const;
+    void visualizePhotons() const;
     void displayConfiguration() const;
     void executeMC();
     void setFiberDiameter(const std::string&);
@@ -58,7 +57,7 @@ private:
     int m_numOfTotalIterations;
     int m_numOfActivePhotons = 0;     // increment on creation
     bool m_isRunning = false;
-    int m_fiberCollisions;
+    std::atomic<int> m_fiberCollisions;
     float m_scatteringLen;
 
     PhotonManager* m_photonManager;

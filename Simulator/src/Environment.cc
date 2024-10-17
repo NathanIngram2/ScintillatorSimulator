@@ -1,8 +1,6 @@
 #include "../inc/Environment.h"
 #include "../inc/MonteCarlo.h"
 
-#include <mutex>
-
 constexpr float PI = 3.14159265359;
 Environment* Environment::m_instance = nullptr;
 
@@ -16,7 +14,8 @@ Environment::~Environment()
 
 }
 
-// this function may be accelerated with the use of a tree search algortihm such as a KD tree
+// this function may be accelerated with the use of a tree search algortihm such as a priority search tree or possibly a KD tree if the
+// acceleration without directionality surpasses brute force with directionality considerations
 std::vector<double> Environment::findClosestFiberInDirection(const std::vector<double>& pos, const std::vector<double>& velo) const
 {
     auto xdir = 1;
@@ -74,7 +73,7 @@ std::vector<double> Environment::findClosestFiberInDirection(const std::vector<d
 
 // find the location of the first collision along a path
 //  - return {} if no collision detected within path length
-//  - return {-999, -999} (arbitrary) if photon leaves simulation bounds
+//  - return {NULL, NULL} if photon leaves simulation bounds
 std::vector<double> Environment::fiberCollision(const std::vector<double>& position, const std::vector<double>& velocity, float stepLen) const
 {
     auto xdir = 1;
@@ -188,7 +187,7 @@ std::vector<float> Environment::reconfig(float spacing, float diameter, std::str
     buff.pop_back(); // remove last \n char
     DataBase::writeToFile(buff, "../out/FiberPositions.txt");
 
-    // find one of the innermost square units to begin simulation from
+    // find one of the innermost square units to randomize scintillation burst within
     auto middle = std::vector<float>({(m_positions.front()[0]+m_positions.back()[0])/2, (m_positions.front()[1]+m_positions.back()[1])/2});
     float closestX = fabs(middle[0] - m_positions.front()[0]);
     float closestY = fabs(middle[1] - m_positions.front()[1]);

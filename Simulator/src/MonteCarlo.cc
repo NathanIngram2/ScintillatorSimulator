@@ -1,9 +1,5 @@
 #include "MonteCarlo.h"
 
-#include <mutex>
-#include <stdio.h>
-#include <chrono>
-
 MonteCarlo* MonteCarlo::MC_singleton = nullptr;
 
 MonteCarlo::MonteCarlo()
@@ -85,7 +81,7 @@ std::string MonteCarlo::toString() const
     return buff;
 }
 
-void MonteCarlo::animateDemo() const
+void MonteCarlo::visualizePhotons() const
 {
     // TODO
 }
@@ -99,9 +95,9 @@ void MonteCarlo::displayConfiguration() const
 
 void MonteCarlo::executeMC()
 {
-    auto burn = remove("../out/FiberPositions.txt");
-    burn = remove("../out/PhotonPaths.txt");
-    burn = remove("../out/testPositions.txt");
+    remove("../out/FiberPositions.txt");
+    remove("../out/PhotonPaths.txt");
+    remove("../out/testPositions.txt");
 
     m_fiberCollisions = 0;
 
@@ -109,9 +105,7 @@ void MonteCarlo::executeMC()
     std::vector<std::thread> threadVec = {};
     
     m_photonManager->setStartingPos(middle, m_fiberSpacing, m_fiberDiameter/2);
-
     auto startTime = std::chrono::high_resolution_clock::now();
-
     std::cout << "Scattering Photons..." << std::endl;
 
     for (int i = 0; i < m_numOfTotalIterations; i++)
@@ -138,7 +132,6 @@ void MonteCarlo::executeMC()
 
     auto endTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
-
     std::cout << "Execution Time: " << duration.count() << "ms" << std::endl;
 }
 

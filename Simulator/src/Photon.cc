@@ -3,6 +3,9 @@
 #include "../inc/Environment.h"
 #include <cstdlib>
 
+
+// This class can be improved by consolodating the use of "std::random_device" for generating random numbers. As of now, it
+// unecessarily reconstructs random_device(s) for each use
 Photon::Photon(const std::vector<double>& startPos, int iterNum, int waveLength, float scatteringLen, std::string scintillatorMat)
 {
     m_identifier = iterNum;
@@ -28,13 +31,9 @@ Photon::Photon(const std::vector<double>& startPos, int iterNum, int waveLength,
 
     m_ppoAbs = ppoAbs[m_wavelength-200];
     m_scintillatorAbs = scintillatorAbs[m_wavelength-250];
-
     m_interactionProb = (1/(scatteringLen/1000) + 1/m_scintillatorAbs + 1/m_ppoAbs);
     this->changeVelocity();
-    if (Environment::getInstance()->isThereFibers() == false)
-    {
-        m_fibersExist = false;
-    }
+    m_fibersExist = Environment::getInstance()->isThereFibers();
 }
 
 Photon::~Photon()
@@ -44,7 +43,6 @@ Photon::~Photon()
 
 void Photon::updatePosition()
 {
-    // velocities are normalized, so this should step correctly
     m_pathBuffer.append(std::to_string(m_position[0]) + "," + std::to_string(m_position[1]) + "," + std::to_string(m_position[2]) + "\n");
 
     if (m_fibersExist == true)
