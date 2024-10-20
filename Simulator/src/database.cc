@@ -6,7 +6,6 @@ std::mutex mtx;
 
 std::vector<double> DataBase::getValsByKey(std::string key, std::string filename)
 {
-    // std::cout << "Searching for: " + key + " in: " + filename << std::endl;
     std::ifstream t(filename);
     if (!t)
     {
@@ -34,13 +33,6 @@ std::vector<double> DataBase::getValsByKey(std::string key, std::string filename
         }
     }
 
-    /*
-    for (int i = 0; i < values.size(); i++)
-    {
-        std::cout << values.at(i) << std::endl;
-    }
-    */
-
     return values;
 }
 
@@ -55,7 +47,6 @@ void DataBase::writeToFile(std::string info, std::string filename)
     }
 
     t << info + "\n";
-
     t.close();
     mtx.unlock();
 }

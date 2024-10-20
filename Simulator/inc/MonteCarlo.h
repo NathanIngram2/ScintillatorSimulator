@@ -37,7 +37,7 @@ public:
     std::string getFiberMaterial() const;
     std::string toString() const;
 
-    void visualizePhotons() const;
+    void visualizePhotons(const std::string&) const;
     void displayConfiguration() const;
     void executeMC();
     void setFiberDiameter(const std::string&);

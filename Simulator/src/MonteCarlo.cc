@@ -81,9 +81,14 @@ std::string MonteCarlo::toString() const
     return buff;
 }
 
-void MonteCarlo::visualizePhotons() const
+void MonteCarlo::visualizePhotons(const std::string& input) const
 {
-    // TODO
+    std::string commandStr = input + " -sc_type " + m_scintillatorMaterial;
+    if (m_fiberDiameter != 0 && m_fiberSpacing != 0)
+    {
+        commandStr += " -fiber_diam " + std::to_string(m_fiberDiameter);
+    }
+    system(commandStr.c_str());
 }
 
 void MonteCarlo::displayConfiguration() const
