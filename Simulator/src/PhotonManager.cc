@@ -3,7 +3,6 @@
 
 PhotonManager::PhotonManager()
 {
-    // TODO
     std::cout << "Constructing Photon Manager\n";
     auto success = init();
     if (!success)
@@ -15,7 +14,6 @@ PhotonManager::PhotonManager()
 
 PhotonManager::~PhotonManager()
 {
-    // TODO
     std::cout << "Destruct PhotonManager\n";
 
     for (int i = 0; i < m_activeThreads.size(); i++)
@@ -31,14 +29,12 @@ PhotonManager::~PhotonManager()
 
 bool PhotonManager::init()
 {
-    // TODO
     try
     {
         std::cout << "Calling database from init()\n";
         auto emissionProbabilities = DataBase::getValsByKey("EMISSION_y_value_interp", "../database/emission.txt");
         m_wavelengths = DataBase::getValsByKey("EMISSION_x_value_interp", "../database/emission.txt");
         m_emissionProbabilities = std::discrete_distribution<int>(emissionProbabilities.begin(), emissionProbabilities.end());
-        // TODO: generate random starting position inside unit cell
     }
     catch (std::exception e)
     {
@@ -83,11 +79,6 @@ void PhotonManager::generateWavelengths(int iterations)
     std::cout << "]\n\n";
 }
 
-const std::vector<Photon*> PhotonManager::getActivePhotons()
-{
-    // TODO
-}
-
 std::thread PhotonManager::initializePhoton(int iterNum, float scatteringLen, std::string scintillatorMaterial)
 {
     std::random_device rd;
@@ -111,7 +102,7 @@ void PhotonManager::waitForOpening()
 {
     // check to see if number of active photons has been decremented
     auto size = m_activePhotons.size();
-    while (m_activePhotons.size() < size)
+    while (m_activePhotons.size() >= size)
     {
         // just pausing here
     }

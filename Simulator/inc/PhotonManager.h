@@ -26,7 +26,6 @@ public:
 
     bool init(); // read datafiles, return true if success, else false
     void generateWavelengths(int);
-    const std::vector<Photon*> getActivePhotons();
     std::thread initializePhoton(int, float, std::string);    // create and start the thread for a new photon
     void destroyPhoton(int);
     int getNumberOfRunningThreads() const;

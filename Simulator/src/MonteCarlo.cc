@@ -112,7 +112,7 @@ void MonteCarlo::executeMC()
     m_photonManager->setStartingPos(middle, m_fiberSpacing, m_fiberDiameter/2);
     auto startTime = std::chrono::high_resolution_clock::now();
     std::cout << "Scattering Photons..." << std::endl;
-
+ 
     for (int i = 0; i < m_numOfTotalIterations; i++)
     {
         if (m_photonManager->getNumberOfRunningThreads() < m_processorCount)
