@@ -46,6 +46,7 @@ public:
     void setNumOfPhotons(const std::string&);
     void setScintillatorMaterial(const std::string&);
     void setScatteringLength(const std::string&);
+    void setSearchType(const std::string&);
     void setPhotonManagerRef(PhotonManager*);
     void notify(int, bool);
 
@@ -59,6 +60,8 @@ private:
     bool m_isRunning = false;
     std::atomic<int> m_fiberCollisions;
     float m_scatteringLen;
+    std::string m_searchType;
+    bool m_threadCount;
 
     PhotonManager* m_photonManager;
     Environment* m_environment;

@@ -71,6 +71,18 @@ std::vector<double> Environment::findClosestFiberInDirection(const std::vector<d
     }
 }
 
+std::vector<double> Environment::findClosestFiberInDirectionKDTree(const std::vector<double>& pos, const std::vector<double>& velo) const
+{
+    //std::cout << "Position is: " << pos[0] << ", " << pos[1] << std::endl;
+    std::cout << "Position is: " << "-0.055674" << ", " << "0.0631432" << std::endl;
+
+    //auto arrRep = std::array<float, 2>({float(pos.at(0)),float(pos.at(1))});
+    auto arrRep = std::array<float, 2>({-0.055674, 0.0631432});    
+    auto closest = m_kdtree->search(arrRep);
+    std::cout << "Closest is apparently: " << closest[0] << ", " << closest[1] << std::endl;
+    exit(0);
+}
+
 // find the location of the first collision along a path
 //  - return {} if no collision detected within path length
 //  - return {NULL, NULL} if photon leaves simulation bounds
@@ -116,7 +128,11 @@ std::vector<double> Environment::fiberCollision(const std::vector<double>& posit
         totalDistTravelledY = ydir*totalDistTravelled*sin(veloAngle);
         buff.append(std::to_string(position[0] + totalDistTravelledX) + ", " + std::to_string(position[1] + totalDistTravelledY) + "\n");
         std::vector<double> pos = {position[0]+totalDistTravelledX, position[1]+totalDistTravelledY};
+        
+        // TODO: adjust this so it's driven by the toggleable menu at the montecarlo.cc level
+        //auto closestFiberPosition = findClosestFiberInDirectionKDTree(pos, velocity);
         auto closestFiberPosition = findClosestFiberInDirection(pos, velocity);
+
         if (closestFiberPosition.empty() == true)
         {
             return {NULL, NULL};
@@ -207,6 +223,100 @@ std::vector<float> Environment::reconfig(float spacing, float diameter, std::str
         }
     }
     auto innerSquareMiddle = std::vector<float>({(m_positions[xind-1][0] + m_positions[xind][0])/2, (m_positions[yind-1][1] + m_positions[yind][1])/2, 0.f});
+
+    std::cout << "Done!\n";
+    return innerSquareMiddle;
+}
+
+// reconfigure environment so a full teardown is not needed to simulate different designs
+std::vector<float> Environment::reconfigWArrays(float spacing, float diameter, std::string material)
+{
+    if (spacing == 0 || diameter == 0 || spacing <= diameter/2)
+    {
+        std::cout << "Either no spacing or diamater specified, or not enough spacing by diameter. No fibers will be simulated." << std::endl;
+        m_fibersExist = false;
+        return {0.f, 0.f, 0.f};
+    }
+    else
+    {
+        m_fibersExist = true;
+    }
+    std::cout << "Configuring Environment...\n";
+    m_positionsArrays.clear();
+    m_spacing = spacing;
+    m_diameter = diameter;
+
+    int numOfCylinders = m_width / spacing;
+    for (int i = 0; i < numOfCylinders; i++)
+    {
+        for (int j = 0; j < numOfCylinders; j++)
+        {
+           float x = -m_width / 2 + i * spacing;
+           float y = -m_width / 2 + j * spacing;
+           m_positionsArrays.push_back(std::array<float, 2>({x, y}));
+        }
+    }
+
+    std::string buff = "";
+    for (auto positions : m_positionsArrays)
+    {
+        buff.append(std::to_string(positions[0]) + ", " + std::to_string(positions[1]) + ",\n");
+    }
+
+    buff.pop_back(); // remove last \n char
+    DataBase::writeToFile(buff, "../out/FiberPositions.txt");
+
+    // find one of the innermost square units to randomize scintillation burst within
+    auto middle = std::vector<float>({(m_positionsArrays.front()[0]+m_positionsArrays.back()[0])/2, (m_positionsArrays.front()[1]+m_positionsArrays.back()[1])/2});
+    float closestX = fabs(middle[0] - m_positionsArrays.front()[0]);
+    float closestY = fabs(middle[1] - m_positionsArrays.front()[1]);
+    int xind = 0;
+    int yind = 0;
+    for (int i = 1; i < m_positionsArrays.size(); i++)
+    {
+        if (fabs(middle[0] - m_positionsArrays[i][0]) < closestX)
+        {
+            closestX = fabs(middle[0] - m_positionsArrays[i][0]);
+            xind = i;
+        }
+        if (fabs(middle[1] - m_positionsArrays[i][1]) < closestY)
+        {
+            closestY = fabs(middle[1] - m_positionsArrays[i][1]);
+            yind = i;
+        }
+    }
+    auto innerSquareMiddle = std::vector<float>({(m_positionsArrays[xind-1][0] + m_positionsArrays[xind][0])/2, (m_positionsArrays[yind-1][1] + m_positionsArrays[yind][1])/2, 0.f});
+
+    // find index of the closest fiber to the scintillation burst
+    int closestInd = -1;
+    float distMag;
+    float prevDist;
+    for (int i = 0; i < m_positionsArrays.size(); i++)
+    {
+        distMag = sqrt(fabs(m_positionsArrays[i][0] - innerSquareMiddle[0])*fabs(m_positionsArrays[i][0] - innerSquareMiddle[0]) + 
+                    fabs(m_positionsArrays[i][1] - innerSquareMiddle[1])*fabs(m_positionsArrays[i][1] - innerSquareMiddle[1]));
+        if (closestInd == -1)
+        {
+            prevDist = distMag;
+            closestInd = 0;
+        }
+        else if (distMag < prevDist)
+        {
+            prevDist = distMag;
+            closestInd = i;
+        }
+    }
+
+    // build kdTree from one of the closest fibers to the scintillation burst / simulation middle
+    int numFibers = m_positionsArrays.size();
+    std::cout << closestInd << " Is the closest index" << std::endl;
+    for (int i = 0; i < closestInd; i++)
+    {
+        m_kdtree->insert(m_positionsArrays[closestInd - i]);
+        m_kdtree->insert(m_positionsArrays[numFibers - closestInd + i]);
+    }
+    // m_kdtree->print();
+    // exit(0);
 
     std::cout << "Done!\n";
     return innerSquareMiddle;

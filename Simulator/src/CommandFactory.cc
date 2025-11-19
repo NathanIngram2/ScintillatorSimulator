@@ -42,6 +42,9 @@ CommandIf* CommandFactory::createCommand(MenuOptions option)
       case AnimateDemo:
         return new VisualizeCommand("Visualize Scattering (matplotlib)", {""});
 
+      case SetSearchType:
+        return new SetSearchTypeCommand("Set Spatial Search Type (Impacts performance)", {""});
+
       case ExecuteMC:
         return new ExecuteMCCommand("Execute Monte Carlo", {""});
 

@@ -12,6 +12,7 @@
 #include "./SetNumOfPhotonsCommand.h"
 #include "./SetScintillatorMaterialCommand.h"
 #include "./SetScatteringLengthCommand.h"
+#include "./SetSearchTypeCommand.h"
 #include "./StubCommand.h"
 #include "./MenuOptions.h"
 

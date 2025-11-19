@@ -30,5 +30,12 @@ void SetScintillatorMaterialCommand::Execute() const
             scintillatingMaterial = " ";
     }
 
-    m_monteCarloInstance->setScintillatorMaterial(scintillatingMaterial);
+    if (scintillatingMaterial == " ")
+    {
+        std::cout << "Input is invalid. Scintillating material was not changed.\n";
+    }
+    else
+    {
+        m_monteCarloInstance->setScintillatorMaterial(scintillatingMaterial);
+    }
 }

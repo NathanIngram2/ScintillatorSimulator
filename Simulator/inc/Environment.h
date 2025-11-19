@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <mutex>
+#include "./KDTree.h"
 
 class Environment
 {
@@ -11,6 +12,8 @@ private:
     void operator=(const Environment&) = delete;
 
     std::vector<std::vector<float>> m_positions;
+    std::vector<std::array<float, 2>> m_positionsArrays;
+    KDTree<2>* m_kdtree = new KDTree<2>(); // only place a KDTree should exist in our program
     
     float m_diameter;
     float m_spacing;
@@ -33,7 +36,9 @@ public:
     }
 
     std::vector<float> reconfig(float, float, std::string);
+    std::vector<float> reconfigWArrays(float, float, std::string);
     std::vector<double> fiberCollision(const std::vector<double>&, const std::vector<double>&, float) const;
     std::vector<double> findClosestFiberInDirection(const std::vector<double>&, const std::vector<double>&) const;
+    std::vector<double> findClosestFiberInDirectionKDTree(const std::vector<double>&, const std::vector<double>&) const;
     bool isThereFibers() const;
 };

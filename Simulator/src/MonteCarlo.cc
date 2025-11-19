@@ -11,9 +11,11 @@ MonteCarlo::MonteCarlo()
     m_fiberSpacing = 10; // mm
     m_numOfTotalIterations = 300;
     m_scatteringLen = 2.0; // mm
+    
 
+    // TODO: make this a menu option (whether to multithread)
     m_processorCount = std::thread::hardware_concurrency();
-    // m_processorCount = 1;
+    //m_processorCount = 1;
 
     std::cout << m_processorCount << " possible concurrent threads" << std::endl;
     if (m_processorCount == 0)
@@ -78,6 +80,7 @@ std::string MonteCarlo::toString() const
     buff.append("Fiber Spacing: " + std::to_string(m_fiberSpacing) + "mm\n");
     buff.append("Number of iterations (photon num): " + std::to_string(m_numOfTotalIterations) + "\n");
     buff.append("Mean scattering length: " + std::to_string(m_scatteringLen) + "mm\n");
+    buff.append("Style of spatial search (for fiber collisions): " + m_searchType + "\n");
     return buff;
 }
 
@@ -106,7 +109,9 @@ void MonteCarlo::executeMC()
 
     m_fiberCollisions = 0;
 
+    // TODO: Make this a toggleable option to use a tree or not
     auto middle = Environment::getInstance()->reconfig(m_fiberSpacing/1000, m_fiberDiameter/1000, m_fiberMaterial);
+    //auto middle = Environment::getInstance()->reconfigWArrays(m_fiberSpacing/1000, m_fiberDiameter/1000, m_fiberMaterial);
     std::vector<std::thread> threadVec = {};
     
     m_photonManager->setStartingPos(middle, m_fiberSpacing, m_fiberDiameter/2);
@@ -167,14 +172,12 @@ void MonteCarlo::setScatteringLength(const std::string& input)
 
 void MonteCarlo::setScintillatorMaterial(const std::string& input)
 {
-    if (input == " ")
-    {
-        std::cout << "Input is invalid. Scintillating material was not changed.\n";
-    }
-    else
-    {
-        m_scintillatorMaterial = input;
-    }
+    m_scintillatorMaterial = input;
+}
+
+void MonteCarlo::setSearchType(const std::string& input)
+{
+    m_searchType = input;
 }
 
 // TODO: This forces the program into a more sequential form, if time, allow photons to
